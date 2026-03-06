@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Clone</title>
+
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/player.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+
+<div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="spotify-logo"></div>
+            Spotify
+        </div>
+        
+        <div class="nav-item active" data-page="home">🏠 Home</div>
+        <div class="nav-item" id="libraryBtn" data-page="library">📚 Your Library</div>
+        
+        <div class="playlist-section" id="playlistMenu">
+            <div class="playlist-title">Playlists</div>
+            <div class="playlist-item" data-playlist="recentlyPlayed">Recently Played</div>
+            <div class="playlist-item" data-playlist="chillVibes">Chill Vibes</div>
+            <div class="playlist-item" data-playlist="workout">Workout Mix</div>
+            <div class="playlist-item" data-playlist="study">Study Focus</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <div class="search-bar-wrapper">
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <input type="text" id="globalSearch" placeholder="Search for songs, artists, or albums...">
+                </div>
+                <div class="search-results-dropdown" id="searchResults"></div>
+            </div>
+            
+            <div class="user-profile">
+                <div class="profile-pic"></div>
+                <span>Saurav Vashistha</span>
+            </div>
+        </div>
+
+        <!-- Home Page -->
+        <div id="homePage">
+            <div class="section fade-in">
+                <div class="section-title">Discover Your Vibe</div>
+                <div class="bento-grid" id="bentoGrid"></div>
+            </div>
+        </div>
+
+        <!-- Library Page (Hidden by default) -->
+        <div id="libraryPage">
+            <div class="section fade-in">
+                <div class="section-title">Recently Played</div>
+                <div class="track-grid" id="recentlyPlayedGrid"></div>
+            </div>
+
+            <div class="section fade-in">
+                <div class="section-title">Chill Vibes</div>
+                <div class="track-grid" id="chillVibesGrid"></div>
+            </div>
+
+            <div class="section fade-in">
+                <div class="section-title">Workout Mix</div>
+                <div class="track-grid" id="workoutGrid"></div>
+            </div>
+
+            <div class="section fade-in">
+                <div class="section-title">Study Focus</div>
+                <div class="track-grid" id="studyGrid"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PLAYER -->
+<div class="player">
+    <div class="now-playing">
+        <div class="now-playing-cover">♪</div>
+        <div class="now-playing-info">
+            <h4 id="currentSong">Select a song</h4>
+            <p id="currentArtist">Unknown Artist</p>
+        </div>
+    </div>
+
+    <div class="player-controls">
+        <div class="control-buttons">
+            <button class="control-btn" id="shuffleBtn">🔀</button>
+            <button class="control-btn" id="prevBtn">⏮️</button>
+            <button class="control-btn play-pause-btn" id="playPauseBtn">▶️</button>
+            <button class="control-btn" id="nextBtn">⏭️</button>
+            <button class="control-btn" id="repeatBtn">🔁</button>
+        </div>
+        
+        <div class="progress-container">
+            <span class="time" id="currentTime">0:00</span>
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="time" id="totalTime">0:00</span>
+        </div>
+    </div>
+
+    <div class="volume-controls">
+        <span>🔊</span>
+        <div class="volume-bar" id="volumeBar">
+            <div class="volume-fill" id="volumeFill"></div>
+        </div>
+    </div>
+</div>
+
+<!-- AUDIO ELEMENT -->
+<audio id="audioPlayer"></audio>
+
+<!-- JavaScript Modules -->
+<script src="js/config.js"></script>
+<script src="js/tracks-data.js"></script>
+<script src="js/utils.js"></script>
+<script src="../javascript/cache.js"></script>
+<script src="js/playlist.js"></script>
+<script src="js/player.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

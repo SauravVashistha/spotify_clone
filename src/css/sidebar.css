@@ -1,0 +1,110 @@
+/* ============================================
+   SPOTIFY CLONE - SIDEBAR STYLES
+   ============================================ */
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.spotify-logo {
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+    background: #1db954;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.spotify-logo::before,
+.spotify-logo::after {
+    content: '';
+    position: absolute;
+    background: #000;
+    border-radius: 20px;
+}
+
+.spotify-logo::before {
+    width: 20px;
+    height: 3px;
+    top: 8px;
+    left: 6px;
+    box-shadow: 0 5px 0 #000, 0 10px 0 #000;
+}
+
+/* Navigation Items */
+.nav-item {
+    padding: 12px 0;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    padding-left: 16px;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.nav-item.active {
+    background: #1db954;
+}
+
+/* Playlist Section */
+.playlist-section {
+    margin-top: 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.playlist-section.active {
+    max-height: 500px;
+}
+
+.playlist-title {
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #b3b3b3;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Playlist Items */
+.playlist-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-bottom: 3px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+.playlist-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.playlist-item.active {
+    background: rgba(29, 185, 84, 0.3);
+    color: #1db954;
+}
