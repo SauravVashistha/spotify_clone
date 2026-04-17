@@ -1,0 +1,191 @@
+/* ============================================
+   SPOTIFY CLONE - COMPONENTS STYLES
+   ============================================ */
+
+/* ========== BENTO GRID ========== */
+
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    grid-auto-rows: 200px;
+}
+
+.bento-item {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    min-height: 200px;
+}
+
+.bento-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.7) 100%);
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.bento-item:hover::before {
+    background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%);
+}
+
+.bento-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.bento-item-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bento-item-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.bento-item-count {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.bento-item-play {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: #1db954;
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0.7) translateY(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+    margin-top: 8px;
+}
+
+.bento-item:hover .bento-item-play {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    box-shadow: 0 6px 16px rgba(29, 185, 84, 0.4);
+}
+
+.bento-item-large {
+    grid-column: span 2;
+    grid-row: span 2;
+    min-height: auto;
+}
+
+/* ========== TRACK GRID ========== */
+
+.track-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.track-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.track-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Track Cover */
+.track-cover {
+    width: 100%;
+    height: 140px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+}
+
+.track-cover::before {
+    content: "♪";
+    font-size: 36px;
+    opacity: 0.7;
+}
+
+.track-cover.has-image::before {
+    display: none;
+}
+
+.play-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 40px;
+    height: 40px;
+    background: #1db954;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+    transform: translateY(10px);
+    border: none;
+    color: white;
+}
+
+.track-card:hover .play-btn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Track Info */
+.track-info h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-info p {
+    color: #b3b3b3;
+    font-size: 14px;
+}

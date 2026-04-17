@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Clone</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .spotify-logo {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+            background: #1db954;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .spotify-logo::before,
+        .spotify-logo::after {
+            content: '';
+            position: absolute;
+            background: #000;
+            border-radius: 20px;
+        }
+
+        .spotify-logo::before {
+            width: 20px;
+            height: 3px;
+            top: 8px;
+            left: 6px;
+            box-shadow: 0 5px 0 #000, 0 10px 0 #000;
+        }
+
+        .nav-item {
+            padding: 12px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            padding-left: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: #1db954;
+        }
+
+        .playlist-section {
+            margin-top: 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .playlist-section.active {
+            max-height: 500px;
+        }
+
+        .playlist-title {
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #b3b3b3;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .playlist-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-bottom: 3px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-size: 14px;
+        }
+
+        .playlist-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .playlist-item.active {
+            background: rgba(29, 185, 84, 0.3);
+            color: #1db954;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .search-bar-wrapper {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 12px 20px;
+            width: 100%;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            width: 100%;
+            margin-left: 10px;
+        }
+
+        .search-bar input::placeholder {
+            color: #b3b3b3;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+        }
+
+        .search-results-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(20, 20, 20, 0.98);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            max-height: 0;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: max-height 0.3s ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .search-results-dropdown.active {
+            max-height: 400px;
+        }
+
+        .search-result-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-result-item:hover {
+            background: rgba(29, 185, 84, 0.2);
+            transform: translateX(4px);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-cover {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .search-result-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-result-title {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .search-result-artist {
+            font-size: 12px;
+            color: #b3b3b3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-result-play {
+            width: 32px;
+            height: 32px;
+            background: #1db954;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .search-result-item:hover .search-result-play {
+            opacity: 1;
+        }
+
+        .search-result-empty {
+            padding: 20px;
+            text-align: center;
+            color: #b3b3b3;
+            font-size: 14px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .profile-pic {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            margin-right: 10px;
+        }
+
+        /* Content Sections */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            grid-auto-rows: 200px;
+        }
+
+        .bento-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            min-height: 200px;
+        }
+
+        .bento-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.7) 100%);
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .bento-item:hover::before {
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%);
+        }
+
+        .bento-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .bento-item-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bento-item-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .bento-item-count {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .bento-item-play {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: #1db954;
+            border-radius: 50%;
+            opacity: 0;
+            transform: scale(0.7) translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+            margin-top: 8px;
+        }
+
+        .bento-item:hover .bento-item-play {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            box-shadow: 0 6px 16px rgba(29, 185, 84, 0.4);
+        }
+
+        .bento-item-large {
+            grid-column: span 2;
+            grid-row: span 2;
+            min-height: auto;
+        }
+
+        .track-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        /* Page Visibility */
+        #homePage {
+            display: block;
+        }
+
+        #libraryPage {
+            display: none;
+        }
+
+        #libraryPage.active {
+            display: block;
+        }
+
+        #homePage.hidden {
+            display: none;
+        }
+
+        .track-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .track-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .track-cover {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .track-cover::before {
+            content: "♪";
+            font-size: 36px;
+            opacity: 0.7;
+        }
+
+        .track-cover.has-image::before {
+            display: none;
+        }
+
+        .play-btn {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 40px;
+            height: 40px;
+            background: #1db954;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            transform: translateY(10px);
+            border: none;
+            color: white;
+        }
+
+        .track-card:hover .play-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .track-info h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .track-info p {
+            color: #b3b3b3;
+            font-size: 14px;
+        }
+
+        /* Player */
+        .player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, rgba(20, 20, 20, 0.95) 0%, rgba(29, 185, 84, 0.15) 50%, rgba(20, 20, 20, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid rgba(29, 185, 84, 0.2);
+        }
+
+        .now-playing {
+            display: flex;
+            align-items: center;
+            width: 300px;
+        }
+
+        .now-playing-cover {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border-radius: 8px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .now-playing-info h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .now-playing-info p {
+            font-size: 12px;
+            color: #b3b3b3;
+        }
+
+        .player-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .control-buttons {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .control-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .play-pause-btn {
+            width: 40px;
+            height: 40px;
+            background: white;
+            color: black;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            gap: 8px;
+        }
+
+        .time {
+            font-size: 12px;
+            color: #b3b3b3;
+            min-width: 40px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #1db954;
+            border-radius: 2px;
+            width: 30%;
+            transition: width 0.1s ease;
+        }
+
+        .volume-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 120px;
+        }
+
+        .volume-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .volume-fill {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            width: 70%;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .playing {
+            animation: pulse 2s infinite;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .search-bar {
+                width: 250px;
+            }
+            
+            .track-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .now-playing {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+                padding-bottom: 100px;
+            }
+            
+            .player {
+                position: relative;
+                order: 3;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="spotify-logo"></div>
+            Spotify
+        </div>
+        
+        <div class="nav-item active" data-page="home">🏠 Home</div>
+        <div class="nav-item" id="libraryBtn" data-page="library">📚 Your Library</div>
+        
+        <div class="playlist-section" id="playlistMenu">
+            <div class="playlist-title">Playlists</div>
+            <div class="playlist-item" data-playlist="recentlyPlayed">Recently Played</div>
+            <div class="playlist-item" data-playlist="chillVibes">Chill Vibes</div>
+            <div class="playlist-item" data-playlist="workout">Workout Mix</div>
+            <div class="playlist-item" data-playlist="study">Study Focus</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <div class="search-bar-wrapper">
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <input type="text" id="globalSearch" placeholder="Search for songs, artists, or albums...">
+                </div>
+                <div class="search-results-dropdown" id="searchResults"></div>
+            </div>
+            
+            <div class="user-profile">
+                <div class="profile-pic"></div>
+                <span>Saurav Vashistha</span>
+            </div>
+        </div>
+
+        <!-- Home Page -->
+        <div id="homePage">
+            <div class="section fade-in">
+                <div class="section-title">Discover Your Vibe</div>
+                <div class="bento-grid" id="bentoGrid"></div>
+            </div>
+        </div>
+
+        <!-- Library Page (Hidden by default) -->
+        <div id="libraryPage">
+            <div class="section fade-in">
+                <div class="section-title">Recently Played</div>
+                <div class="track-grid" id="recentlyPlayedGrid"></div>
+            </div>
+
+            <div class="section fade-in">
+                <div class="section-title">Chill Vibes</div>
+                <div class="track-grid" id="chillVibesGrid"></div>
+            </div>
+
+            <div class="section fade-in">
+                <div class="section-title">Workout Mix</div>
+                <div class="track-grid" id="workoutGrid"></div>
+            </div>
+
+            <div class="section fade-in">
+                <div class="section-title">Study Focus</div>
+                <div class="track-grid" id="studyGrid"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PLAYER -->
+<div class="player">
+    <div class="now-playing">
+        <div class="now-playing-cover">♪</div>
+        <div class="now-playing-info">
+            <h4 id="currentSong">Select a song</h4>
+            <p id="currentArtist">Unknown Artist</p>
+        </div>
+    </div>
+
+    <div class="player-controls">
+        <div class="control-buttons">
+            <button class="control-btn" id="shuffleBtn">🔀</button>
+            <button class="control-btn" id="prevBtn">⏮️</button>
+            <button class="control-btn play-pause-btn" id="playPauseBtn">▶️</button>
+            <button class="control-btn" id="nextBtn">⏭️</button>
+            <button class="control-btn" id="repeatBtn">🔁</button>
+        </div>
+        
+        <div class="progress-container">
+            <span class="time" id="currentTime">0:00</span>
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="time" id="totalTime">0:00</span>
+        </div>
+    </div>
+
+    <div class="volume-controls">
+        <span>🔊</span>
+        <div class="volume-bar" id="volumeBar">
+            <div class="volume-fill" id="volumeFill"></div>
+        </div>
+    </div>
+</div>
+
+<!-- AUDIO ELEMENT -->
+<audio id="audioPlayer"></audio>
+
+<script src="javascript/cache.js"></script>
+<script>
+/* ================= TRACK DATA ================= */
+const tracks = [
+    {
+        title: "Midnight Dreams",
+        artist: "Luna Eclipse",
+        cover: "linear-gradient(45deg,#667eea,#764ba2)",
+        src: "music/SONG_NAME_1.mp3",
+        duration: "3:45"
+    },
+    {
+        title: "Electric Pulse",
+        artist: "Neon Lights",
+        cover: "linear-gradient(45deg,#f093fb,#f5576c)",
+        src: "music/SONG_NAME_2.mp3",
+        duration: "4:12"
+    },
+    {
+        title: "Ocean Waves",
+        artist: "Aqua Sound",
+        cover: "linear-gradient(45deg,#4facfe,#00f2fe)",
+        src: "music/SONG_NAME_3.mp3",
+        duration: "3:28"
+    },
+    {
+        title: "Dhurandhar",
+        artist: "Movie version",
+        cover: "linear-gradient(45deg,#4facfe,#00f2fe)",
+        src: "music/SONG_NAME_4.mp3",
+        duration: "4:00"
+    },
+    {
+        title: "City Nights",
+        artist: "Urban Beats",
+        cover: "linear-gradient(45deg,#43e97b,#38f9d7)",
+        src: "music/SONG_NAME_5.mp3",
+        duration: "3:56"
+    },
+    {
+        title: "Cosmic Journey",
+        artist: "Space Odyssey",
+        cover: "linear-gradient(45deg,#fa709a,#fee140)",
+        src: "music/SONG_NAME_6.mp3",
+        duration: "5:23"
+    },
+    {
+        title: "Golden Hour",
+        artist: "Sunset Vibes",
+        cover: "linear-gradient(45deg,#ff9a9e,#fecfef)",
+        src: "music/SONG_NAME_7.mp3",
+        duration: "4:01"
+    },
+    {
+        title: "Thunder Storm",
+        artist: "Nature's Call",
+        cover: "linear-gradient(45deg,#a8edea,#fed6e3)",
+        src: "music/SONG_NAME_8.mp3",
+        duration: "3:33"
+    }
+];
+
+/* ================= GLOBALS ================= */
+let currentTrackIndex = 0;
+const audio = document.getElementById("audioPlayer");
+
+const playPauseBtn = document.getElementById("playPauseBtn");
+const currentSong = document.getElementById("currentSong");
+const currentArtist = document.getElementById("currentArtist");
+const progressFill = document.getElementById("progressFill");
+const volumeFill = document.getElementById("volumeFill");
+const currentTimeEl = document.getElementById("currentTime");
+const totalTimeEl = document.getElementById("totalTime");
+const progressBar = document.getElementById("progressBar");
+const volumeBar = document.getElementById("volumeBar");
+
+/* ================= PLAYLISTS ================= */
+const playlists = {
+    recentlyPlayed: [],
+    chillVibes: [],
+    workout: [],
+    study: []
+};
+
+/* ================= HELPER FUNCTIONS ================= */
+
+/**
+ * Get random songs from tracks array
+ */
+function getRandomTracks(count) {
+    const shuffled = [...tracks].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+}
+
+/**
+ * Render a track card
+ */
+function renderTrackCard(track, index) {
+    const hasImageClass = track.image ? 'has-image' : '';
+    const imageStyle = track.image ? 
+        `background-image: url('${track.image}'); background-size: cover; background-position: center;` : 
+        `background: ${track.cover}`;
+    
+    return `
+        <div class="track-card" onclick="playTrack(${index})">
+            <div class="track-cover ${hasImageClass}" style="${imageStyle}">
+                <button class="play-btn">▶️</button>
+            </div>
+            <div class="track-info">
+                <h3>${track.title}</h3>
+                <p>${track.artist}</p>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Initialize playlists
+ */
+function initializePlaylists() {
+    // Load recently played from cache
+    const history = getPlayHistory();
+    playlists.recentlyPlayed = history.length > 0 ? history : getRandomTracks(8);
+    
+    // Randomly assign 8 songs to each playlist
+    playlists.chillVibes = getRandomTracks(8);
+    playlists.workout = getRandomTracks(8);
+    playlists.study = getRandomTracks(8);
+}
+
+/**
+ * Render all playlists on homepage
+ */
+function renderAllPlaylists() {
+    // Recently Played
+    const recentGrid = document.getElementById("recentlyPlayedGrid");
+    recentGrid.innerHTML = playlists.recentlyPlayed
+        .map((track, idx) => renderTrackCard(track, tracks.indexOf(track) >= 0 ? tracks.indexOf(track) : idx))
+        .join('');
+    
+    // Chill Vibes
+    const chillGrid = document.getElementById("chillVibesGrid");
+    chillGrid.innerHTML = playlists.chillVibes
+        .map((track, idx) => renderTrackCard(track, tracks.indexOf(track) >= 0 ? tracks.indexOf(track) : idx))
+        .join('');
+    
+    // Workout Mix
+    const workoutGrid = document.getElementById("workoutGrid");
+    workoutGrid.innerHTML = playlists.workout
+        .map((track, idx) => renderTrackCard(track, tracks.indexOf(track) >= 0 ? tracks.indexOf(track) : idx))
+        .join('');
+    
+    // Study Focus
+    const studyGrid = document.getElementById("studyGrid");
+    studyGrid.innerHTML = playlists.study
+        .map((track, idx) => renderTrackCard(track, tracks.indexOf(track) >= 0 ? tracks.indexOf(track) : idx))
+        .join('');
+}
+
+/**
+ * Render bento grid for discover page
+ */
+function renderBentoGrid() {
+    const bentoGrid = document.getElementById("bentoGrid");
+    let bentoHTML = '';
+    
+    const playlistsArray = [
+        { title: "Recently Played", image: "src/assets/images/recently.jpg", tracks: playlists.recentlyPlayed, isLarge: true, key: 'recentlyPlayed' },
+        { title: "Chill Vibes", image: "src/assets/images/chill.jpg", tracks: playlists.chillVibes, isLarge: false, key: 'chillVibes' },
+        { title: "Workout Mix", image: "src/assets/images/workout.jpg", tracks: playlists.workout, isLarge: false, key: 'workout' },
+        { title: "Study Focus", image: "src/assets/images/study.jpg", tracks: playlists.study, isLarge: false, key: 'study' }
+    ];
+    
+    playlistsArray.forEach((playlist, idx) => {
+        const firstTrack = playlist.tracks[0];
+        const trackIndex = tracks.indexOf(firstTrack) >= 0 ? tracks.indexOf(firstTrack) : 0;
+        const largeClass = playlist.isLarge ? 'bento-item-large' : '';
+        const imageUrl = `url('${playlist.image}')`;
+        
+        bentoHTML += `
+            <div class="bento-item ${largeClass}" style="background-image: ${imageUrl};" onclick="viewPlaylist('${playlist.key}', event)">
+                <div class="bento-item-content">
+                    <div class="bento-item-title">${playlist.title}</div>
+                    <div class="bento-item-count">${playlist.tracks.length} songs</div>
+                    <div class="bento-item-play" onclick="playTrack(${trackIndex}); event.stopPropagation();">▶️</div>
+                </div>
+            </div>
+        `;
+    });
+    
+    bentoGrid.innerHTML = bentoHTML;
+}
+
+/* ================= FUNCTIONS ================= */
+function playTrack(index) {
+    currentTrackIndex = index;
+    const track = tracks[index];
+
+    audio.src = track.src;
+    audio.play();
+
+    currentSong.textContent = track.title;
+    currentArtist.textContent = track.artist;
+    playPauseBtn.textContent = "⏸️";
+    
+    // Save to cache
+    saveLastPlayedTrack(index, track);
+    savePlaybackState(index, 0, true);
+    addToPlayHistory(index, track);
+    
+    // Add playing animation
+    document.querySelectorAll('.track-card').forEach((card, idx) => {
+        if (idx === index) {
+            card.classList.add('playing');
+        } else {
+            card.classList.remove('playing');
+        }
+    });
+    
+    // Update total time
+    totalTimeEl.textContent = formatTime(audio.duration);
+}
+
+playPauseBtn.onclick = () => {
+    if (!audio.src) return;
+    if (audio.paused) {
+        audio.play();
+        playPauseBtn.textContent = "⏸️";
+        savePlaybackState(currentTrackIndex, audio.currentTime, true);
+    } else {
+        audio.pause();
+        playPauseBtn.textContent = "▶️";
+        savePlaybackState(currentTrackIndex, audio.currentTime, false);
+    }
+};
+
+document.getElementById('nextBtn').addEventListener('click', nextTrack);
+document.getElementById('prevBtn').addEventListener('click', prevTrack);
+
+// Shuffle and repeat buttons
+document.getElementById('shuffleBtn').addEventListener('click', (e) => {
+    e.target.style.color = e.target.style.color === 'rgb(29, 185, 84)' ? 'white' : '#1db954';
+});
+
+document.getElementById('repeatBtn').addEventListener('click', (e) => {
+    e.target.style.color = e.target.style.color === 'rgb(29, 185, 84)' ? 'white' : '#1db954';
+});
+
+function nextTrack() {
+    currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+    playTrack(currentTrackIndex);
+}
+
+function prevTrack() {
+    currentTrackIndex =
+        (currentTrackIndex - 1 + tracks.length) % tracks.length;
+    playTrack(currentTrackIndex);
+}
+
+/* ================= PROGRESS ================= */
+audio.addEventListener("timeupdate", () => {
+    const percent = (audio.currentTime / audio.duration) * 100;
+    progressFill.style.width = percent + "%";
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+    totalTimeEl.textContent = formatTime(audio.duration);
+    
+    // Save playback state every second
+    if (Math.floor(audio.currentTime) % 1 === 0) {
+        savePlaybackState(currentTrackIndex, audio.currentTime, !audio.paused);
+    }
+});
+
+progressBar.onclick = e => {
+    const bar = e.currentTarget;
+    audio.currentTime =
+        (e.offsetX / bar.clientWidth) * audio.duration;
+    savePlaybackState(currentTrackIndex, audio.currentTime, !audio.paused);
+};
+
+/* ================= VOLUME ================= */
+volumeBar.onclick = e => {
+    const bar = e.currentTarget;
+    const vol = e.offsetX / bar.clientWidth;
+    audio.volume = vol;
+    volumeFill.style.width = vol * 100 + "%";
+};
+
+/* ================= AUTO NEXT ================= */
+audio.addEventListener("ended", nextTrack);
+
+/* ================= SEARCH FUNCTIONALITY ================= */
+function playSearchResult(index) {
+    playTrack(index);
+    document.getElementById('globalSearch').value = '';
+    document.getElementById('searchResults').classList.remove('active');
+}
+
+const searchInput = document.getElementById('globalSearch');
+const searchResults = document.getElementById('searchResults');
+
+searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    
+    if (query.length === 0) {
+        searchResults.classList.remove('active');
+        searchResults.innerHTML = '';
+        return;
+    }
+    
+    // Search across all tracks globally
+    const results = tracks.filter(track => {
+        const title = track.title.toLowerCase();
+        const artist = track.artist.toLowerCase();
+        return title.includes(query) || artist.includes(query);
+    });
+    
+    // Render results in dropdown
+    if (results.length > 0) {
+        let html = '';
+        results.forEach((track, idx) => {
+            const trackIndex = tracks.indexOf(track);
+            html += `
+                <div class="search-result-item" onclick="playSearchResult(${trackIndex})">
+                    <div class="search-result-cover"></div>
+                    <div class="search-result-info">
+                        <div class="search-result-title">${track.title}</div>
+                        <div class="search-result-artist">${track.artist}</div>
+                    </div>
+                    <div class="search-result-play">▶️</div>
+                </div>
+            `;
+        });
+        searchResults.innerHTML = html;
+        searchResults.classList.add('active');
+    } else {
+        searchResults.innerHTML = '<div class="search-result-empty">No results found</div>';
+        searchResults.classList.add('active');
+    }
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-bar-wrapper')) {
+        searchResults.classList.remove('active');
+    }
+});
+
+// Keep dropdown open when searching
+searchInput.addEventListener('focus', () => {
+    if (searchInput.value.trim().length > 0) {
+        searchResults.classList.add('active');
+    }
+});
+
+/* ================= SIDEBAR NAVIGATION ================= */
+const navItems = document.querySelectorAll('.nav-item');
+const playlistMenu = document.getElementById('playlistMenu');
+const playlistItems = document.querySelectorAll('.playlist-item');
+let currentPlaylist = null;
+
+navItems.forEach(item => {
+    item.addEventListener('click', () => {
+        // Remove active from all items
+        navItems.forEach(nav => nav.classList.remove('active'));
+        item.classList.add('active');
+        
+        // Toggle playlist menu
+        const page = item.getAttribute('data-page');
+        if (page === 'library') {
+            playlistMenu.classList.add('active');
+        } else {
+            playlistMenu.classList.remove('active');
+        }
+        
+        // Switch pages
+        switchPage(page);
+    });
+});
+
+// Playlist filter handlers
+playlistItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Remove active from all playlist items
+        playlistItems.forEach(pl => pl.classList.remove('active'));
+        item.classList.add('active');
+        
+        // Filter library by playlist
+        const playlist = item.getAttribute('data-playlist');
+        showPlaylist(playlist);
+    });
+});
+
+/**
+ * View a specific playlist from bento grid
+ */
+function viewPlaylist(playlistKey, event) {
+    event.stopPropagation();
+    
+    // Switch to library page
+    const homePage = document.getElementById('homePage');
+    const libraryPage = document.getElementById('libraryPage');
+    
+    homePage.classList.add('hidden');
+    libraryPage.classList.add('active');
+    playlistMenu.classList.add('active');
+    
+    // Filter to specific playlist
+    showPlaylist(playlistKey);
+    
+    // Update sidebar active state
+    navItems.forEach(item => item.classList.remove('active'));
+    document.querySelector('[data-page="library"]').classList.add('active');
+    
+    // Update playlist menu active state
+    playlistItems.forEach(item => item.classList.remove('active'));
+    document.querySelector(`[data-playlist="${playlistKey}"]`).classList.add('active');
+}
+
+/**
+ * Switch between Home and Library pages
+ */
+function switchPage(page) {
+    const homePage = document.getElementById('homePage');
+    const libraryPage = document.getElementById('libraryPage');
+    
+    if (page === 'home') {
+        homePage.classList.remove('hidden');
+        libraryPage.classList.remove('active');
+        playlistMenu.classList.remove('active');
+        renderBentoGrid();
+    } else if (page === 'library') {
+        homePage.classList.add('hidden');
+        libraryPage.classList.add('active');
+        playlistMenu.classList.add('active');
+        renderAllPlaylists();
+        showAllPlaylists();
+    }
+}
+
+/**
+ * Show specific playlist in library or all
+ */
+function showPlaylist(playlistName) {
+    const recentGrid = document.getElementById('recentlyPlayedGrid');
+    const chillGrid = document.getElementById('chillVibesGrid');
+    const workoutGrid = document.getElementById('workoutGrid');
+    const studyGrid = document.getElementById('studyGrid');
+    
+    // Hide all grids
+    recentGrid.parentElement.style.display = 'none';
+    chillGrid.parentElement.style.display = 'none';
+    workoutGrid.parentElement.style.display = 'none';
+    studyGrid.parentElement.style.display = 'none';
+    
+    // Show selected playlist
+    switch(playlistName) {
+        case 'recentlyPlayed':
+            recentGrid.parentElement.style.display = 'block';
+            break;
+        case 'chillVibes':
+            chillGrid.parentElement.style.display = 'block';
+            break;
+        case 'workout':
+            workoutGrid.parentElement.style.display = 'block';
+            break;
+        case 'study':
+            studyGrid.parentElement.style.display = 'block';
+            break;
+    }
+    
+    currentPlaylist = playlistName;
+}
+
+/**
+ * Show all playlists in library
+ */
+function showAllPlaylists() {
+    const recentGrid = document.getElementById('recentlyPlayedGrid');
+    const chillGrid = document.getElementById('chillVibesGrid');
+    const workoutGrid = document.getElementById('workoutGrid');
+    const studyGrid = document.getElementById('studyGrid');
+    
+    // Show all grids
+    recentGrid.parentElement.style.display = 'block';
+    chillGrid.parentElement.style.display = 'block';
+    workoutGrid.parentElement.style.display = 'block';
+    studyGrid.parentElement.style.display = 'block';
+    
+    // Remove active from all playlist items
+    playlistItems.forEach(pl => pl.classList.remove('active'));
+    
+    currentPlaylist = null;
+}
+
+// Save playback state before leaving page
+window.addEventListener('beforeunload', () => {
+    if (audio.src) {
+        savePlaybackState(currentTrackIndex, audio.currentTime, !audio.paused);
+    }
+});
+
+function formatTime(sec) {
+    if (!sec) return "0:00";
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+/* ================= INITIALIZE FROM CACHE ================= */
+window.addEventListener('load', () => {
+    // Initialize playlists
+    initializePlaylists();
+    
+    // Render both pages
+    renderBentoGrid();      // Home page
+    renderAllPlaylists();   // Library page
+    showAllPlaylists();     // Show all playlists in library
+    
+    // Check if there's a saved playback state
+    const savedState = getPlaybackState();
+    
+    if (savedState && savedState.trackIndex >= 0 && savedState.trackIndex < tracks.length) {
+        // Restore the last played track
+        const track = tracks[savedState.trackIndex];
+        currentTrackIndex = savedState.trackIndex;
+        
+        currentSong.textContent = track.title;
+        currentArtist.textContent = track.artist;
+        audio.src = track.src;
+        audio.currentTime = savedState.currentTime;
+        
+        // Update button state
+        if (savedState.isPlaying) {
+            playPauseBtn.textContent = "⏸️";
+        } else {
+            playPauseBtn.textContent = "▶️";
+        }
+        
+        console.log('✅ Restored last played track:', track.title, `(${formatTime(savedState.currentTime)} / ${track.duration})`);
+    } else {
+        const lastPlayed = getLastPlayedTrack();
+        if (lastPlayed) {
+            console.log('📚 Last played track cached:', lastPlayed.title);
+            currentSong.textContent = lastPlayed.title;
+            currentArtist.textContent = lastPlayed.artist;
+        }
+    }
+});
+</script>
+
+</body>
+</html>

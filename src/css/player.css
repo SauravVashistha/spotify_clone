@@ -1,0 +1,143 @@
+/* ============================================
+   SPOTIFY CLONE - PLAYER STYLES
+   ============================================ */
+
+/* Player Container */
+.player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(90deg, rgba(20, 20, 20, 0.95) 0%, rgba(29, 185, 84, 0.15) 50%, rgba(20, 20, 20, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(29, 185, 84, 0.2);
+}
+
+/* Now Playing Info */
+.now-playing {
+    display: flex;
+    align-items: center;
+    width: 300px;
+}
+
+.now-playing-cover {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    border-radius: 8px;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.now-playing-info h4 {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.now-playing-info p {
+    font-size: 12px;
+    color: #b3b3b3;
+}
+
+/* Player Controls */
+.player-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.control-buttons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.control-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 18px;
+}
+
+.control-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+.play-pause-btn {
+    width: 40px;
+    height: 40px;
+    background: white;
+    color: black;
+}
+
+/* Progress Container */
+.progress-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    gap: 8px;
+}
+
+.time {
+    font-size: 12px;
+    color: #b3b3b3;
+    min-width: 40px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #1db954;
+    border-radius: 2px;
+    width: 30%;
+    transition: width 0.1s ease;
+}
+
+/* Volume Controls */
+.volume-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 120px;
+}
+
+.volume-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.volume-fill {
+    height: 100%;
+    background: white;
+    border-radius: 2px;
+    width: 70%;
+}

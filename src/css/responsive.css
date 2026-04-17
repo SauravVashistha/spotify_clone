@@ -1,0 +1,57 @@
+/* ============================================
+   SPOTIFY CLONE - RESPONSIVE STYLES
+   ============================================ */
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+    
+    .search-bar {
+        width: 250px;
+    }
+    
+    .track-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .now-playing {
+        width: 200px;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        order: 2;
+    }
+    
+    .main-content {
+        order: 1;
+        padding-bottom: 100px;
+    }
+    
+    .player {
+        position: relative;
+        order: 3;
+    }
+    
+    .search-bar {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .bento-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    
+    .bento-item-large {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+}
